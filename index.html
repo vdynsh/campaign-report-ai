@@ -14,9 +14,8 @@
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;}
 .wrap{max-width:700px;margin:0 auto;padding:2rem 1rem;}
-.header{margin-bottom:2.5rem;}
 .badge{display:inline-block;background:var(--accent);color:#0a0a0a;font-size:10px;font-weight:500;padding:3px 10px;border-radius:2px;letter-spacing:.08em;margin-bottom:1rem;}
-h1{font-family:var(--font-head);font-size:28px;font-weight:800;line-height:1.15;color:var(--text);}
+h1{font-family:var(--font-head);font-size:28px;font-weight:800;line-height:1.15;}
 h1 span{color:var(--accent);}
 .sub{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.25rem;}
@@ -28,13 +27,22 @@ h1 span{color:var(--accent);}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
 .field textarea{resize:vertical;min-height:70px;}
 select option{background:#1a1a1a;}
-.btn{width:100%;padding:14px;background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:15px;font-weight:700;border:none;border-radius:3px;cursor:pointer;letter-spacing:.02em;transition:background .15s,transform .1s;}
+.btn-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:0.5rem;}
+.btn{padding:14px;background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:15px;font-weight:700;border:none;border-radius:3px;cursor:pointer;transition:background .15s,transform .1s;}
 .btn:hover{background:var(--accent2);}
 .btn:active{transform:scale(.99);}
 .btn:disabled{background:#333;color:#666;cursor:not-allowed;}
+.btn-demo{padding:14px 20px;background:transparent;color:var(--accent);font-family:var(--font-head);font-size:14px;font-weight:700;border:1px solid var(--accent);border-radius:3px;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.btn-demo:hover{background:rgba(200,241,53,0.08);}
+.api-row{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem;}
+.api-row label{font-size:11px;color:var(--muted);}
+.api-row input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:13px;padding:9px 12px;border-radius:3px;outline:none;transition:border .2s;width:100%;}
+.api-row input:focus{border-color:var(--accent);}
+.api-note{font-size:11px;color:var(--muted);margin-top:4px;}
 .output{display:none;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:1.25rem;}
 .output-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:12px 1.5rem;display:flex;align-items:center;justify-content:space-between;}
 .output-title{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);}
+.demo-tag{font-size:10px;background:#2a2a1a;color:#c8a535;border:1px solid #c8a53540;padding:2px 8px;border-radius:2px;display:none;}
 .output-body{padding:1.5rem;font-size:13px;line-height:1.8;color:#ddd;white-space:pre-wrap;}
 .loader{display:none;text-align:center;padding:2rem;}
 .loader-text{font-size:12px;color:var(--muted);animation:pulse 1.5s ease infinite;}
@@ -46,12 +54,11 @@ select option{background:#1a1a1a;}
 .copy-btn{font-family:var(--font-mono);font-size:11px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:2px;cursor:pointer;}
 .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
 .error{color:#f09595;font-size:12px;padding:.75rem 1.5rem;border-top:1px solid var(--border);display:none;}
-.api-note{font-size:11px;color:var(--muted);text-align:center;margin-top:0.5rem;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
+  <div style="margin-bottom:2.5rem;">
     <div class="badge">BUILT WITH CLAUDE AI</div>
     <h1>Campaign <span>Intelligence</span><br>Report Generator</h1>
     <p class="sub">Paste your raw campaign numbers → get an analyst-grade performance report in seconds.<br>Built by Vidyansh Sharma to replace 3-hour manual reporting cycles.</p>
@@ -60,69 +67,55 @@ select option{background:#1a1a1a;}
   <div class="panel">
     <div class="panel-label">CAMPAIGN DETAILS</div>
     <div class="grid2" style="margin-bottom:12px;">
-      <div class="field">
-        <label>Campaign name</label>
-        <input id="camp-name" type="text" placeholder="e.g. June Lead Gen — Google" value="June Lead Gen — Google Ads">
-      </div>
-      <div class="field">
-        <label>Channel</label>
+      <div class="field"><label>Campaign name</label><input id="camp-name" type="text" value="June Lead Gen — Google Ads"></div>
+      <div class="field"><label>Channel</label>
         <select id="channel">
-          <option>Google Ads</option>
-          <option>Meta (Facebook/Instagram)</option>
-          <option>LinkedIn</option>
-          <option>Email</option>
-          <option>Organic / SEO</option>
-          <option>WhatsApp</option>
+          <option>Google Ads</option><option>Meta (Facebook/Instagram)</option>
+          <option>LinkedIn</option><option>Email</option><option>Organic / SEO</option><option>WhatsApp</option>
         </select>
       </div>
     </div>
     <div class="grid2">
-      <div class="field">
-        <label>Reporting period</label>
-        <input id="period" type="text" placeholder="e.g. 1–30 June 2025" value="1–30 June 2025">
-      </div>
-      <div class="field">
-        <label>Business / product</label>
-        <input id="business" type="text" placeholder="e.g. EdTech upskilling" value="EdTech upskilling courses">
-      </div>
+      <div class="field"><label>Reporting period</label><input id="period" type="text" value="1–30 June 2025"></div>
+      <div class="field"><label>Business / product</label><input id="business" type="text" value="EdTech upskilling courses"></div>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-label">RAW METRICS</div>
     <div class="grid2" style="margin-bottom:12px;">
-      <div class="field"><label>Impressions</label><input id="imp" type="number" placeholder="120000" value="124500"></div>
-      <div class="field"><label>Clicks</label><input id="clicks" type="number" placeholder="3200" value="3180"></div>
-      <div class="field"><label>Leads generated</label><input id="leads" type="number" placeholder="410" value="412"></div>
-      <div class="field"><label>Conversions / sales</label><input id="conv" type="number" placeholder="38" value="41"></div>
-      <div class="field"><label>Total spend (₹)</label><input id="spend" type="number" placeholder="85000" value="87500"></div>
-      <div class="field"><label>Revenue generated (₹)</label><input id="revenue" type="number" placeholder="480000" value="492000"></div>
+      <div class="field"><label>Impressions</label><input id="imp" type="number" value="124500"></div>
+      <div class="field"><label>Clicks</label><input id="clicks" type="number" value="3180"></div>
+      <div class="field"><label>Leads generated</label><input id="leads" type="number" value="412"></div>
+      <div class="field"><label>Conversions / sales</label><input id="conv" type="number" value="41"></div>
+      <div class="field"><label>Total spend (₹)</label><input id="spend" type="number" value="87500"></div>
+      <div class="field"><label>Revenue generated (₹)</label><input id="revenue" type="number" value="492000"></div>
     </div>
-    <div class="field">
-      <label>Additional context (optional)</label>
-      <textarea id="context" placeholder="e.g. new creative tested in week 3, competitor launched a sale mid-month...">New creatives tested from June 15. Competitor launched discount campaign around June 20.</textarea>
-    </div>
-  </div>
-
-  <div class="panel" style="margin-bottom:1.25rem;">
-    <div class="panel-label">API KEY</div>
-    <div class="field">
-      <label>Anthropic API Key (required — not stored anywhere)</label>
-      <input id="api-key" type="password" placeholder="sk-ant-...">
+    <div class="field"><label>Additional context (optional)</label>
+      <textarea id="context">New creatives tested from June 15. Competitor launched discount campaign around June 20.</textarea>
     </div>
   </div>
 
-  <button class="btn" id="run-btn" onclick="runReport()">Generate AI Report →</button>
-  <p class="api-note">Your API key is only used in your browser and never sent anywhere except Anthropic's API.</p>
-
-  <div class="loader" id="loader">
-    <div class="loader-text">Analysing campaign data with Claude...</div>
+  <div class="api-row">
+    <label>Anthropic API Key — optional (leave blank to use demo report)</label>
+    <input id="api-key" type="password" placeholder="sk-ant-... (optional — tool works without it via demo mode)">
+    <span class="api-note">Your key is only used in your browser and never stored anywhere.</span>
   </div>
+
+  <div class="btn-row">
+    <button class="btn" id="run-btn" onclick="runReport()">Generate AI Report →</button>
+    <button class="btn-demo" onclick="runDemo()">Try Demo</button>
+  </div>
+
+  <div class="loader" id="loader"><div class="loader-text">Analysing campaign data with Claude...</div></div>
 
   <div class="output" id="output">
     <div class="output-header">
       <span class="output-title">AI-GENERATED CAMPAIGN REPORT</span>
-      <button class="copy-btn" onclick="copyReport()">Copy report</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="demo-tag" id="demo-tag">DEMO OUTPUT</span>
+        <button class="copy-btn" onclick="copyReport()">Copy report</button>
+      </div>
     </div>
     <div class="metrics-row" id="metrics-row"></div>
     <div class="output-body" id="output-body"></div>
@@ -131,6 +124,27 @@ select option{background:#1a1a1a;}
 </div>
 
 <script>
+const DEMO_REPORT = `EXECUTIVE SUMMARY
+The June Lead Gen campaign on Google Ads delivered a ROAS of 5.62x on ₹87,500 spend, generating ₹492,000 in revenue from 41 conversions. While overall efficiency is strong, the lead-to-sale conversion rate of 9.95% and a cost per lead of ₹212 indicate a healthy top-of-funnel with room to improve mid-funnel qualification.
+
+PERFORMANCE HIGHLIGHTS
+• ROAS of 5.62x significantly exceeds the typical 3-4x benchmark for EdTech Google Ads campaigns, indicating strong ad-to-landing page alignment and offer relevance.
+• CTR of 2.55% is above the EdTech industry average of ~1.8%, suggesting the ad creative and headline messaging resonated with the target audience.
+• New creatives introduced on June 15 likely contributed to the strong second-half performance — a trend worth isolating in the next reporting cycle to confirm causation.
+
+AREAS OF CONCERN
+• Lead-to-sale CVR of 9.95% (41 sales from 412 leads) means 90% of leads did not convert — indicating potential friction in the sales follow-up process or a lead quality mismatch.
+• The competitor discount campaign launched around June 20 may have suppressed conversion rates in the final 10 days. Isolating pre- and post-June 20 CVR would confirm whether this impacted results.
+• With 124,500 impressions and only 3,180 clicks, there is a significant untapped audience — improved ad copy testing could push CTR toward 3%+.
+
+KEY INSIGHT
+The campaign's strength is at the top of the funnel — reach and click efficiency are performing well. The real opportunity lies between lead capture and sale. A 9.95% lead-to-sale rate at this spend level means every 1% improvement in CVR would generate approximately 4 additional conversions, worth ~₹48,000 in revenue at current AOV. The data strongly suggests investing in lead qualification — whether through a better intake form, faster response SLA, or improved nurture sequence — before scaling ad spend further.
+
+RECOMMENDATIONS FOR NEXT CYCLE
+1. A/B test the new June 15 creatives explicitly against the original set to isolate their contribution to CTR. If confirmed, retire the underperforming variants and reallocate budget to the winners.
+2. Implement a lead scoring system to distinguish high-intent leads (e.g. those who visited the pricing page or started checkout) from cold leads. Route high-intent leads to faster follow-up — target a sub-2-hour response window.
+3. Run a competitor response analysis: identify which keywords or audience segments the competitor's discount campaign targeted. Adjust bidding strategy and ad messaging to defend positioning in those segments in July.`;
+
 function calcMetrics(){
   const imp=+document.getElementById('imp').value||1;
   const clicks=+document.getElementById('clicks').value||1;
@@ -151,89 +165,75 @@ function showMetrics(m){
     <div class="metric-box"><div class="val">${m.ctr}%</div><div class="lbl">CTR</div></div>
     <div class="metric-box"><div class="val">₹${m.cpl}</div><div class="lbl">Cost per lead</div></div>
     <div class="metric-box"><div class="val">${m.cvr}%</div><div class="lbl">Lead→sale CVR</div></div>
-    <div class="metric-box"><div class="val">${m.roas}x</div><div class="lbl">ROAS</div></div>
-  `;
+    <div class="metric-box"><div class="val">${m.roas}x</div><div class="lbl">ROAS</div></div>`;
+}
+
+function showOutput(text, isDemo){
+  const m = calcMetrics();
+  showMetrics(m);
+  document.getElementById('output-body').textContent = text;
+  document.getElementById('demo-tag').style.display = isDemo ? 'inline-block' : 'none';
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('output').style.display = 'block';
+}
+
+function runDemo(){
+  document.getElementById('output').style.display = 'none';
+  document.getElementById('loader').style.display = 'block';
+  setTimeout(() => showOutput(DEMO_REPORT, true), 900);
 }
 
 async function runReport(){
-  const apiKey=document.getElementById('api-key').value.trim();
-  if(!apiKey){alert('Please enter your Anthropic API key to generate the report.');return;}
+  const apiKey = document.getElementById('api-key').value.trim();
+  if(!apiKey){ runDemo(); return; }
 
-  const btn=document.getElementById('run-btn');
-  const loader=document.getElementById('loader');
-  const output=document.getElementById('output');
-  const body=document.getElementById('output-body');
-  const errBox=document.getElementById('error-box');
+  const btn = document.getElementById('run-btn');
+  const errBox = document.getElementById('error-box');
+  btn.disabled = true;
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('output').style.display = 'none';
+  errBox.style.display = 'none';
 
-  const name=document.getElementById('camp-name').value;
-  const channel=document.getElementById('channel').value;
-  const period=document.getElementById('period').value;
-  const biz=document.getElementById('business').value;
-  const imp=document.getElementById('imp').value;
-  const clicks=document.getElementById('clicks').value;
-  const leads=document.getElementById('leads').value;
-  const conv=document.getElementById('conv').value;
-  const spend=document.getElementById('spend').value;
-  const revenue=document.getElementById('revenue').value;
-  const ctx=document.getElementById('context').value;
-  const m=calcMetrics();
+  const m = calcMetrics();
+  const prompt = `You are a senior performance marketing analyst. Write a professional campaign performance report.
 
-  btn.disabled=true;
-  loader.style.display='block';
-  output.style.display='none';
-  errBox.style.display='none';
+Campaign: ${document.getElementById('camp-name').value}
+Channel: ${document.getElementById('channel').value}
+Period: ${document.getElementById('period').value}
+Business: ${document.getElementById('business').value}
 
-  const prompt=`You are a senior performance marketing analyst. Write a professional campaign performance report.
+Metrics:
+- Impressions: ${document.getElementById('imp').value}
+- Clicks: ${document.getElementById('clicks').value} (CTR: ${m.ctr}%)
+- Leads: ${document.getElementById('leads').value} (CPL: ₹${m.cpl})
+- Conversions: ${document.getElementById('conv').value} (CVR: ${m.cvr}%)
+- Spend: ₹${document.getElementById('spend').value}
+- Revenue: ₹${document.getElementById('revenue').value} (ROAS: ${m.roas}x)
+- Context: ${document.getElementById('context').value||'None'}
 
-Campaign: ${name}
-Channel: ${channel}
-Period: ${period}
-Business: ${biz}
-
-Raw metrics:
-- Impressions: ${imp}
-- Clicks: ${clicks} (CTR: ${m.ctr}%)
-- Leads: ${leads} (Cost per lead: ₹${m.cpl})
-- Conversions/Sales: ${conv} (Lead-to-sale CVR: ${m.cvr}%)
-- Total Spend: ₹${spend}
-- Revenue: ₹${revenue} (ROAS: ${m.roas}x)
-
-Additional context: ${ctx||'None'}
-
-Write the report in these sections:
-1. EXECUTIVE SUMMARY (2-3 sentences, highlight the headline result)
-2. PERFORMANCE HIGHLIGHTS (3 bullet points — what worked)
-3. AREAS OF CONCERN (2-3 bullet points — what needs attention)
-4. KEY INSIGHT (1 paragraph — the single most important finding)
-5. RECOMMENDATIONS FOR NEXT CYCLE (3 specific, actionable recommendations)
-
-Be direct, data-driven, and specific. Use the actual numbers. Sound like a senior analyst.`;
+Sections: 1. EXECUTIVE SUMMARY (2-3 sentences) 2. PERFORMANCE HIGHLIGHTS (3 bullets) 3. AREAS OF CONCERN (2-3 bullets) 4. KEY INSIGHT (1 paragraph) 5. RECOMMENDATIONS FOR NEXT CYCLE (3 actionable items). Be direct, data-driven, use actual numbers.`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
-    const data=await res.json();
-    const text=data.content?.map(b=>b.text||'').join('');
-    if(!text)throw new Error(data.error?.message||'No response from API');
-    showMetrics(m);
-    body.textContent=text;
-    loader.style.display='none';
-    output.style.display='block';
+    const data = await res.json();
+    const text = data.content?.map(b=>b.text||'').join('');
+    if(!text) throw new Error(data.error?.message||'No response');
+    showOutput(text, false);
   }catch(e){
-    loader.style.display='none';
-    output.style.display='block';
+    document.getElementById('loader').style.display='none';
+    document.getElementById('output').style.display='block';
     errBox.style.display='block';
     errBox.textContent='Error: '+e.message;
-  }finally{btn.disabled=false;}
+  }finally{ btn.disabled=false; }
 }
 
 function copyReport(){
-  const text=document.getElementById('output-body').textContent;
-  navigator.clipboard.writeText(text).then(()=>{
-    const b=document.querySelector('.copy-btn');
+  navigator.clipboard.writeText(document.getElementById('output-body').textContent).then(()=>{
+    const b = document.querySelector('.copy-btn');
     b.textContent='Copied!';
     setTimeout(()=>b.textContent='Copy report',2000);
   });
